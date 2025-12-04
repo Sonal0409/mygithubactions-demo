@@ -1,12 +1,32 @@
-name: My first workflow
-on: workflow_dispatch
+name: Run Specific Job
+
+on:
+  workflow_dispatch:
+    inputs:
+      job_name:
+        description: "Job to run"
+        required: true
+        type: choice
+        options:
+          - build
+          - test
+          - deploy
+
 jobs:
-  firstjob:
+  build:
+    if: ${{ github.event.inputs.job_name == 'build' }}
     runs-on: ubuntu-latest
-    steps: 
-      - name: Print a message
-        run: echo "Hello All"
-      - name: Run multiple commands
-        run: |
-          echo "Hello from Actions"
-          echo "Executed Job1 of the workflow"
+    steps:
+      - run: echo "Running build job"
+
+  test:
+    if: ${{ github.event.inputs.job_name == 'test' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Running tests"
+
+  deploy:
+    if: ${{ github.event.inputs.job_name == 'deploy' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploying..."
